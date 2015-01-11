@@ -349,8 +349,8 @@ phrase :: Parser L.Text
 phrase = fromElements <$> many1 element
   where
     element = T.concat     <$> many1 (lexeme encodedWord)
-          <|> decodeLatin1 <$> quotedString
-          <|> decodeLatin1 <$> dotAtom
+          <|> decodeUtf8   <$> quotedString
+          <|> decodeUtf8   <$> dotAtom
 
 -- | Parse a comma-separated list of phrases.
 phraseList :: Parser [L.Text]
@@ -363,7 +363,7 @@ unstructured :: Parser L.Text
 unstructured = fromElements <$ fws <*> many element <* A.endOfInput
   where
     element = T.concat     <$> many1 (encodedWord <* fws)
-          <|> decodeLatin1 <$> word <* fws
+          <|> decodeUtf8   <$> word <* fws
 
     word    = A.takeWhile1 (not . A8.isSpace_w8)
 
